@@ -1,12 +1,15 @@
 package ru.practicum.shareit.item.dto;
 
 
+import lombok.AccessLevel;
 import lombok.Data;
-import org.springframework.stereotype.Component;
+
+
+import lombok.NoArgsConstructor;
 import ru.practicum.shareit.item.model.Item;
 
 @Data
-@Component
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ItemMapper {
 
     public static ItemDto toItemDto(Item item) {
@@ -15,7 +18,19 @@ public class ItemMapper {
                 item.getName(),
                 item.getDescription(),
                 item.getAvailable(),
-                item.getRequest()
+                item.getRequest(),
+                item.getOtherId()
+        );
+    }
+
+    public static Item toItem(ItemDto itemDto){
+        return new Item(
+                itemDto.getId(),
+                itemDto.getName(),
+                itemDto.getDescription(),
+                itemDto.getAvailable(),
+                itemDto.getOtherId(),
+                itemDto.getRequest()
         );
     }
 

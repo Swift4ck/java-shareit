@@ -6,8 +6,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemMapper;
+import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.User;
-import ru.practicum.shareit.user.repository.InMemoryUserRepository;
+import ru.practicum.shareit.user.repository.UserRepository;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -20,9 +22,9 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class InMemoryItemRepository implements ItemRepository {
 
-    private final InMemoryUserRepository inMemoryUserRepository;
+    private final UserRepository inMemoryUserRepository;
 
-    private final Map<Long, ItemDto> items = new HashMap<>();
+    private final Map<Long, Item> items = new HashMap<>();
     private long nextId = 1L;
 
     @Override
@@ -46,45 +48,59 @@ public class InMemoryItemRepository implements ItemRepository {
             itemDto.setAvailable(true);
         }
 
-        items.put(itemDto.getId(), itemDto);
+        Item item = ItemMapper.toItem(itemDto);
+
+        items.put(item.getId(), item);
         return itemDto;
     }
 
     @Override
     public ItemDto updateItem(Long userId, Long itemsId, ItemDto itemDto) {
 
-        ItemDto updateItemDto = items.get(itemsId);
+        Item updateItem = items.get(itemsId);
 
-        if (updateItemDto == null) {
+        if (updateItem == null) {
             throw new NotFoundException("Item не существует");
         }
+
+        ItemDto updateItemDto = ItemMapper.toItemDto(updateItem);
 
         if (!updateItemDto.getOtherId().equals(userId)) {
             throw new NotFoundException("Item не принадлежит вам");
         }
 
-        updateItemDto.setName(itemDto.getName());
-        updateItemDto.setDescription(itemDto.getDescription());
-        updateItemDto.setAvailable(itemDto.getAvailable());
+        if (itemDto.getName() != null && !itemDto.getName().isEmpty()){
+            updateItemDto.setName(itemDto.getName());
+        }
+
+        if (itemDto.getDescription() != null && !itemDto.getDescription().isEmpty()){
+            updateItemDto.setDescription(itemDto.getDescription());
+        }
+
+        if (itemDto.getAvailable() != null){
+            updateItemDto.setAvailable(itemDto.getAvailable());
+        }
 
         return updateItemDto;
     }
 
     @Override
     public ItemDto getByIdItems(Long userId, Long itemId) {
-        ItemDto itemDto = items.get(itemId);
-
-        if (itemDto == null) {
+        Item item = items.get(itemId);
+        if (item == null) {
             throw new NotFoundException("Item не существует");
         }
 
-        return itemDto;
+        return ItemMapper.toItemDto(item);
     }
 
     @Override
     public Collection<ItemDto> getAllUserItems(Long userId) {
+
+
         return items.values().stream()
                 .filter(itemDto -> itemDto.getOtherId().equals(userId))
+                .map(ItemMapper::toItemDto)
                 .collect(Collectors.toList());
     }
 
@@ -100,6 +116,7 @@ public class InMemoryItemRepository implements ItemRepository {
                     return (name != null && name.toLowerCase().contains(search)) ||
                             (description != null && description.toLowerCase().contains(search));
                 })
+                .map(ItemMapper::toItemDto)
                 .collect(Collectors.toList());
     }
 

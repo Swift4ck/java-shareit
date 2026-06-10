@@ -17,20 +17,18 @@ import java.util.List;
 public class ItemServiceImp implements ItemService {
 
     private final InMemoryItemRepository inMemoryItemRepository;
-    private final ItemMapper itemMapper;
+
 
     @Override
-    public ItemDto createItemDto(Long userId, Item item) {
+    public ItemDto createItemDto(Long userId, ItemDto item) {
         log.info("Запрос на создания нового предмета {} , от пользователя {}", item, userId);
 
         if (item == null) {
             throw new RuntimeException("Item пустой");
         }
 
-        ItemDto createItemDto = itemMapper.toItemDto(item);
 
-
-        return inMemoryItemRepository.createItemDto(userId, createItemDto);
+        return inMemoryItemRepository.createItemDto(userId, item);
     }
 
     @Override
