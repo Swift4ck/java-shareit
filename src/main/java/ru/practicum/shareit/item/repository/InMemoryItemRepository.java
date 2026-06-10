@@ -69,15 +69,15 @@ public class InMemoryItemRepository implements ItemRepository {
             throw new NotFoundException("Item не принадлежит вам");
         }
 
-        if (itemDto.getName() != null && !itemDto.getName().isEmpty()){
+        if (itemDto.getName() != null && !itemDto.getName().isEmpty()) {
             updateItemDto.setName(itemDto.getName());
         }
 
-        if (itemDto.getDescription() != null && !itemDto.getDescription().isEmpty()){
+        if (itemDto.getDescription() != null && !itemDto.getDescription().isEmpty()) {
             updateItemDto.setDescription(itemDto.getDescription());
         }
 
-        if (itemDto.getAvailable() != null){
+        if (itemDto.getAvailable() != null) {
             updateItemDto.setAvailable(itemDto.getAvailable());
         }
 
