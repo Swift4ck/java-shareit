@@ -21,8 +21,8 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public Map<String, String> handleGlobalException (Exception ex){
-        log.error("Произошла ошибка сервера {}" , ex.getMessage());
+    public Map<String, String> handleGlobalException(Exception ex) {
+        log.error("Произошла ошибка сервера {}", ex.getMessage());
         return Map.of("Внутреняя ошибка сервера", ex.getMessage());
     }
 }
