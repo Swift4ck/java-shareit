@@ -1,6 +1,6 @@
 package ru.practicum.shareit.booking.servise;
 
-
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -28,10 +28,11 @@ public class BookingServiceImp implements BookingService {
 
     private final UserRepository userRepository;
     private final ItemRepository itemRepository;
-    private final BookingMapper bookingMapper;
     private final BookingRepository bookingRepository;
 
+
     @Override
+    @Transactional
     public BookingDto create(Long userId, BookingDto bookingDto) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("Пользователь не найден " + userId));
@@ -63,9 +64,10 @@ public class BookingServiceImp implements BookingService {
         booking.setBooker(user);
         booking.setStatus(BookingStatus.WAITING);
 
-        return bookingMapper.toBookingDto(bookingRepository.save(booking));
+        return BookingMapper.toBookingDto(bookingRepository.save(booking));
     }
 
+    @Transactional
     @Override
     public BookingDto approved(Long userId, Long bookingId, Boolean approved) {
         log.info("Подтверждение бронирования от пользователя {}, для брони {} ", userId, bookingId);
@@ -86,9 +88,10 @@ public class BookingServiceImp implements BookingService {
             booking.setStatus(BookingStatus.REJECTED);
         }
 
-        return bookingMapper.toBookingDto(bookingRepository.save(booking));
+        return BookingMapper.toBookingDto(bookingRepository.save(booking));
     }
 
+    @Transactional(readOnly = true)
     @Override
     public BookingDto getById(Long userId, Long bookingId) {
         log.info("Запрос брони {} от пользователя {} ", bookingId, userId);
@@ -107,9 +110,10 @@ public class BookingServiceImp implements BookingService {
             throw new BadRequestException("Только владелец вещи или тот кто бронирует имеет доступ");
         }
 
-        return bookingMapper.toBookingDto(booking);
+        return BookingMapper.toBookingDto(booking);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Collection<BookingDto> getUserBooking(Long userId, BookingState state) {
         log.info("Запрос на получение информации списка бронирования пользователя {}", userId);
@@ -142,6 +146,7 @@ public class BookingServiceImp implements BookingService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Collection<BookingDto> getOwnerBookings(Long ownerId, BookingState state) {
         log.info("Запрос на получение бронирований вещей владельца {}", ownerId);
