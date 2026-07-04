@@ -6,4 +6,5 @@ public class NotFoundException extends RuntimeException {
         super(mes);
     }
 
+
 }

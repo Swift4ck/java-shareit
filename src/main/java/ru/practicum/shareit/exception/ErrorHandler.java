@@ -25,4 +25,12 @@ public class ErrorHandler {
         log.error("Произошла ошибка сервера {}", ex.getMessage());
         return Map.of("Внутреняя ошибка сервера", ex.getMessage());
     }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Map<String, String> handleBadRequestException(final BadRequestException e) {
+        log.error("Обработано ошибка BadRequestException {}", e.getMessage());
+        return Map.of("error", e.getMessage());
+    }
+
 }

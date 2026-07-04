@@ -2,10 +2,15 @@ package ru.practicum.shareit.item.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import ru.practicum.shareit.booking.dto.BookingDto;
+
+import java.util.List;
 
 
-@Data
+@Getter
+@Setter
 public class ItemDto {
 
     private Long id;
@@ -22,6 +27,12 @@ public class ItemDto {
     private Long otherId;
 
     private String request;
+
+    private BookingDto lastBooking;
+
+    private BookingDto nextBooking;
+
+    private List<CommentDto> comments;
 
 
     public ItemDto(Long id, String name, String description, Boolean available, String request, Long otherId) {
