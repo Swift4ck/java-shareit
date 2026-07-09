@@ -1,33 +1,33 @@
-package ru.practicum.shareit.item.model;
+package ru.practicum.shareit.request.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import ru.practicum.shareit.user.User;
+
+
+import java.time.LocalDateTime;
+
 
 @Getter
 @Setter
 @AllArgsConstructor
 @Entity
-@Table(name = "items")
+@Table(name = "requests")
 @NoArgsConstructor
-public class Item {
-
+public class ItemRequest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @NotBlank
-    private String name;
+    private long id;
 
     @NotBlank
     private String description;
 
+    @ManyToOne
     @NotNull
-    private Boolean available;
+    @JoinColumn(name = "requestor_id")
+    private User requestor;
 
-    @Column(name = "other_id")
-    private Long otherId;
-
-    private String request;
+    private LocalDateTime created;
 }
