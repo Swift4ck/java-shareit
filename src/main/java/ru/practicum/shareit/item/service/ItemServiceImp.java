@@ -2,7 +2,9 @@ package ru.practicum.shareit.item.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 import ru.practicum.shareit.booking.BookingStatus;
 import ru.practicum.shareit.booking.dto.BookingMapper;
 import ru.practicum.shareit.booking.repository.BookingRepository;
@@ -16,6 +18,8 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
+import ru.practicum.shareit.request.model.ItemRequest;
+import ru.practicum.shareit.request.repository.ItemRequestRepository;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 
@@ -33,15 +37,19 @@ public class ItemServiceImp implements ItemService {
     private final UserRepository userRepository;
     private final CommentRepository commentRepository;
     private final BookingRepository bookingRepository;
+    private final ItemRequestRepository itemRequestRepository;
 
     @Override
-    public ItemDto createItemDto(Long userId, ItemDto itemDto) {
+    public ItemDto createItemDto( Long userId, ItemDto itemDto) {
         log.info("Запрос на создание нового предмета {} от пользователя {}", itemDto, userId);
 
         userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("Пользователь с id " + userId + " не найден"));
 
-        Item item = ItemMapper.toItem(itemDto);
+        ItemRequest additionalRequest = itemDto.getRequest() != null ? itemRequestRepository.findById(itemDto.getRequest().getId())
+                .orElseThrow(() -> new NotFoundException("Запрос с id " + itemDto.getRequest().getId() + " не найден")) : null;
+
+        Item item = ItemMapper.toItem(itemDto, additionalRequest);
         item.setOtherId(userId);
         Item savedItem = itemRepository.save(item);
         return ItemMapper.toItemDto(savedItem);
@@ -79,11 +87,11 @@ public class ItemServiceImp implements ItemService {
 
         ItemDto itemDto = ItemMapper.toItemDto(item);
 
-        List<CommentDto> commentDtos = commentRepository.findAllByItemId(itemId).stream()
+        List<CommentDto> commentDto = commentRepository.findAllByItemId(itemId).stream()
                 .map(CommentMapper::toCommentDto)
                 .collect(Collectors.toList());
 
-        itemDto.setComments(commentDtos);
+        itemDto.setComments(commentDto);
 
         LocalDateTime now = LocalDateTime.now();
 

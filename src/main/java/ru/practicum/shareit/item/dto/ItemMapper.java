@@ -7,6 +7,8 @@ import lombok.Data;
 
 import lombok.NoArgsConstructor;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.request.model.ItemRequest;
+
 @Data
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ItemMapper {
@@ -22,15 +24,14 @@ public class ItemMapper {
         );
     }
 
-    public static Item toItem(ItemDto itemDto) {
-        return new Item(
-                itemDto.getId(),
-                itemDto.getName(),
-                itemDto.getDescription(),
-                itemDto.getAvailable(),
-                itemDto.getOtherId(),
-                itemDto.getRequest()
-        );
+    public static Item toItem(ItemDto itemDto, ItemRequest request) {
+        return Item.builder()
+                .name(itemDto.getName())
+                .description(itemDto.getDescription())
+                .available(itemDto.getAvailable())
+                .otherId(itemDto.getOtherId())
+                .request(request)
+                .build();
     }
 }
 

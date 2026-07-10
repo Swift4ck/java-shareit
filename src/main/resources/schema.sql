@@ -18,6 +18,7 @@ CREATE TABLE IF NOT EXISTS requests (
   requestor_id BIGINT,
   created TIMESTAMP WITHOUT TIME ZONE NOT NULL,
 
+  CONSTRAINT pk_request PRIMARY KEY (id),
   CONSTRAINT fk_requests_requestor FOREIGN KEY (requestor_id) REFERENCES users(id)
 );
 
@@ -27,7 +28,9 @@ CREATE TABLE IF NOT EXISTS items (
   description VARCHAR(255) NOT NULL,
   available BOOLEAN NOT NULL,
   other_id BIGINT NOT NULL,
-  request VARCHAR(255),
+  request BIGINT,
+
+  CONSTRAINT fk_items_requests FOREIGN KEY (request) REFERENCES requests(id),
   CONSTRAINT pk_item PRIMARY KEY (id)
 );
 

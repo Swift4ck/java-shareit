@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import ru.practicum.shareit.booking.dto.BookingDto;
+import ru.practicum.shareit.request.model.ItemRequest;
 
 import java.util.List;
 
@@ -26,7 +27,7 @@ public class ItemDto {
 
     private Long otherId;
 
-    private String request;
+    private ItemRequest request;
 
     private BookingDto lastBooking;
 
@@ -35,7 +36,7 @@ public class ItemDto {
     private List<CommentDto> comments;
 
 
-    public ItemDto(Long id, String name, String description, Boolean available, String request, Long otherId) {
+    public ItemDto(Long id, String name, String description, Boolean available, ItemRequest request, Long otherId) {
         this.id = id;
         this.name = name;
         this.description = description;

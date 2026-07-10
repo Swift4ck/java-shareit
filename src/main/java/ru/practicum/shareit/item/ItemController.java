@@ -18,7 +18,7 @@ public class ItemController {
     private final ItemService itemService;
 
     @PostMapping
-    public ItemDto createItemDto(@RequestHeader("X-Sharer-User-Id") Long userId, @Valid @RequestBody ItemDto item) {
+    public ItemDto createItemDto(@RequestHeader("X-Sharer-User-Id") Long userId, @RequestBody ItemDto item) {
         return itemService.createItemDto(userId, item);
     }
 

@@ -7,6 +7,7 @@ import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.dto.ItemRequestMapper;
+import ru.practicum.shareit.request.dto.RequestDto;
 import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.request.repository.ItemRequestRepository;
 import ru.practicum.shareit.user.User;
@@ -14,6 +15,7 @@ import ru.practicum.shareit.user.repository.UserRepository;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.List;
 
 
 @Service
@@ -73,7 +75,11 @@ public class ItemRequestServesImp implements ItemRequestService {
         ItemRequest itemRequest = itemRequestRepository.findById(requestId)
                 .orElseThrow(() -> new NotFoundException("Запрос не найден " + requestId));
 
-        return ItemRequestMapper.toItemRequestDto(itemRequest);
+        List<RequestDto> items = itemRepository.findByRequestId(requestId).stream()
+                .map(ItemRequestMapper::toRequestDto)
+                .toList();
+
+        return ItemRequestMapper.toItemRequestDto(itemRequest, items);
     }
 
 

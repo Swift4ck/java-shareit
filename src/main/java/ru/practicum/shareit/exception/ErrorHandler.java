@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.Map;
-
 @RestControllerAdvice
 @Slf4j
 public class ErrorHandler {
@@ -20,17 +19,37 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public Map<String, String> handleGlobalException(Exception ex) {
-        log.error("Произошла ошибка сервера {}", ex.getMessage());
-        return Map.of("Внутреняя ошибка сервера", ex.getMessage());
-    }
-
-    @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Map<String, String> handleBadRequestException(final BadRequestException e) {
         log.error("Обработано ошибка BadRequestException {}", e.getMessage());
         return Map.of("error", e.getMessage());
     }
 
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Map<String, String> handleMethodArgumentNotValid(
+            org.springframework.web.bind.MethodArgumentNotValidException e) {
+        log.error("Ошибка валидации DTO {}", e.getMessage());
+        return Map.of("error", e.getMessage());
+    }
+
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Map<String, String> handleConstraintViolation(
+            jakarta.validation.ConstraintViolationException e) {
+        log.error("Ошибка валидации Entity {}", e.getMessage());
+        return Map.of("error", e.getMessage());
+    }
+
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public Map<String, String> handleGlobalException(Exception ex) {
+        log.error("Произошла ошибка сервера {}", ex.getMessage());
+        return Map.of("error", ex.getMessage());
+    }
 }
+
+

@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import ru.practicum.shareit.request.model.ItemRequest;
 
 @Getter
 @Setter
@@ -11,6 +12,7 @@ import lombok.*;
 @Entity
 @Table(name = "items")
 @NoArgsConstructor
+@Builder
 public class Item {
 
     @Id
@@ -29,5 +31,7 @@ public class Item {
     @Column(name = "other_id")
     private Long otherId;
 
-    private String request;
+    @ManyToOne
+    @JoinColumn(name = "request")
+    private ItemRequest request;
 }
