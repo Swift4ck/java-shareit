@@ -40,14 +40,16 @@ public class ItemServiceImp implements ItemService {
     private final ItemRequestRepository itemRequestRepository;
 
     @Override
-    public ItemDto createItemDto( Long userId, ItemDto itemDto) {
+    public ItemDto createItemDto(Long userId, ItemDto itemDto) {
         log.info("Запрос на создание нового предмета {} от пользователя {}", itemDto, userId);
 
         userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("Пользователь с id " + userId + " не найден"));
 
-        ItemRequest additionalRequest = itemDto.getRequest() != null ? itemRequestRepository.findById(itemDto.getRequest().getId())
-                .orElseThrow(() -> new NotFoundException("Запрос с id " + itemDto.getRequest().getId() + " не найден")) : null;
+        ItemRequest additionalRequest = itemDto.getRequestId() != null
+                ? itemRequestRepository.findById(itemDto.getRequestId())
+                .orElseThrow(() -> new NotFoundException("Запрос с id " + itemDto.getRequestId() + " не найден"))
+                : null;
 
         Item item = ItemMapper.toItem(itemDto, additionalRequest);
         item.setOtherId(userId);

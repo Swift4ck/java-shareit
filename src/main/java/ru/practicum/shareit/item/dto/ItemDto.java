@@ -27,7 +27,7 @@ public class ItemDto {
 
     private Long otherId;
 
-    private ItemRequest request;
+    private Long requestId;
 
     private BookingDto lastBooking;
 
@@ -41,7 +41,7 @@ public class ItemDto {
         this.name = name;
         this.description = description;
         this.available = available;
-        this.request = request;
+        this.requestId = request != null ? request.getId() : null;
         this.otherId = otherId;
     }
 }
