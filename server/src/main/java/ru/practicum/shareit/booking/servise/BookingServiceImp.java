@@ -37,9 +37,6 @@ public class BookingServiceImp implements BookingService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("Пользователь не найден " + userId));
 
-        if (bookingDto.getItemId() == null) {
-            throw new NotFoundException("Вещь не найдена");
-        }
 
         Item item = itemRepository.findById(bookingDto.getItemId())
                 .orElseThrow(() -> new NotFoundException("Вещь не найдена " + bookingDto.getItemId()));
@@ -48,14 +45,11 @@ public class BookingServiceImp implements BookingService {
             throw new NotFoundException("Свою вещь нельзя забронировать");
         }
 
+
         if (Boolean.FALSE.equals(item.getAvailable())) {
             throw new BadRequestException("Вещь недоступна для бронирования");
         }
 
-        if (bookingDto.getStart() == null || bookingDto.getEnd() == null
-                || !bookingDto.getStart().isBefore(bookingDto.getEnd())) {
-            throw new BadRequestException("Некорректное время брони");
-        }
 
         Booking booking = new Booking();
         booking.setStart(bookingDto.getStart());
