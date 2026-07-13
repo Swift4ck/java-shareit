@@ -4,10 +4,7 @@ import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.user.UserClient;
-import ru.practicum.shareit.user.UserDto;
 
-import java.util.Collection;
 
 @RequestMapping("/items")
 @RestController
@@ -27,14 +24,14 @@ public class ItemController {
     }
 
     @PatchMapping("/{itemId}")
-    public ResponseEntity<Object> updateItem(@RequestHeader("X-Sharer-User-Id") Long userId, @PathVariable Long itemId, @RequestBody ItemDto itemDto){
-        log.info("Получен запрос обновление вещи {} от пользователя и id {}", itemDto , userId);
+    public ResponseEntity<Object> updateItem(@RequestHeader("X-Sharer-User-Id") Long userId, @PathVariable Long itemId, @RequestBody ItemDto itemDto) {
+        log.info("Получен запрос обновление вещи {} от пользователя и id {}", itemDto, userId);
         return itemClient.updateItem(userId, itemId, itemDto);
     }
 
     @GetMapping("/{itemId}")
     public ResponseEntity<Object> getByIdItems(@RequestHeader("X-Sharer-User-Id") Long userId, @PathVariable Long itemId) {
-        log.info("Получен запрос получение вещи {} от пользователя и id {}", itemId , userId);
+        log.info("Получен запрос получение вещи {} от пользователя и id {}", itemId, userId);
         return itemClient.getByIdItems(userId, itemId);
     }
 
@@ -52,7 +49,7 @@ public class ItemController {
 
     @PostMapping("/{itemId}/comment")
     public ResponseEntity<Object> addComment(@RequestHeader("X-Sharer-User-Id") Long userId, @PathVariable Long itemId,
-                                 @RequestBody CommentDto commentDto) {
+                                             @RequestBody CommentDto commentDto) {
         log.info("Добавление комментария  к item {}, от пользователя {}, с текстом {}", userId, itemId, commentDto);
         return itemClient.addComment(userId, itemId, commentDto);
     }

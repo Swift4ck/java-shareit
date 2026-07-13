@@ -1,5 +1,6 @@
 package ru.practicum.shareit.item.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -26,7 +27,8 @@ public class ItemDto {
 
     private Long otherId;
 
-    private String request;
+    @JsonProperty("requestId")
+    private Long requestId;
 
     private BookingDto lastBooking;
 
@@ -35,12 +37,12 @@ public class ItemDto {
     private List<CommentDto> comments;
 
 
-    public ItemDto(Long id, String name, String description, Boolean available, String request, Long otherId) {
+    public ItemDto(Long id, String name, String description, Boolean available, Long requestId, Long otherId) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.available = available;
-        this.request = request;
+        this.requestId = requestId;
         this.otherId = otherId;
     }
 }

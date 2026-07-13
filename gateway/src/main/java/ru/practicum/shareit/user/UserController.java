@@ -4,7 +4,6 @@ package ru.practicum.shareit.user;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.user.UserDto;
 import org.springframework.http.ResponseEntity;
 
 @RequestMapping("/users")

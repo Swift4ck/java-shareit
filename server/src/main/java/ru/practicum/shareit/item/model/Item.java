@@ -30,6 +30,7 @@ public class Item {
     @Column(name = "other_id")
     private Long otherId;
 
-    private String request;
+    @Column(name = "request_id")
+    private Long requestId;
 
 }

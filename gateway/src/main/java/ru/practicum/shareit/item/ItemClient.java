@@ -3,13 +3,8 @@ package ru.practicum.shareit.item;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
 import ru.practicum.shareit.client.BaseClient;
-import ru.practicum.shareit.user.UserDto;
 
 @Component
 public class ItemClient extends BaseClient {

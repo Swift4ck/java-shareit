@@ -33,9 +33,6 @@ public class ItemRequestServesImp implements ItemRequestService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("Пользователь не найден " + userId));
 
-//        if (itemRequestDto.getDescription().isEmpty()) {
-//            throw new NotFoundException("Описание вещи не должно быть пустым");
-//        }
 
         ItemRequest itemRequest = new ItemRequest();
 
@@ -75,7 +72,8 @@ public class ItemRequestServesImp implements ItemRequestService {
         ItemRequest itemRequest = itemRequestRepository.findById(requestId)
                 .orElseThrow(() -> new NotFoundException("Запрос не найден " + requestId));
 
-        List<RequestDto> items = itemRepository.findByRequest(String.valueOf(requestId)).stream()
+
+        List<RequestDto> items = itemRepository.findByRequestId(requestId).stream()
                 .map(ItemRequestMapper::toRequestDto)
                 .toList();
 
