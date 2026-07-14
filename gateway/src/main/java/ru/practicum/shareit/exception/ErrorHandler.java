@@ -20,4 +20,11 @@ public class ErrorHandler {
         return Map.of("error", e.getMessage());
     }
 
+    @ExceptionHandler(BadRequestException.class)//добавил этот снова что бы в bookingClient метод верно выдал ошибку create
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Map<String, String> handleBadRequest(final BadRequestException e) {
+        log.error("Ошибка запроса: {}", e.getMessage());
+        return Map.of("error", e.getMessage());
+    }
+
 }
