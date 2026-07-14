@@ -21,13 +21,6 @@ public class ErrorHandler {
     }
 
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Map<String, String> handleValidationException(final MethodArgumentNotValidException e) {
-        log.error("Ошибка валидации {}", e.getMessage());
-        return Map.of("error", e.getMessage());
-    }
-
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public Map<String, String> handleGlobalException(Exception ex) {

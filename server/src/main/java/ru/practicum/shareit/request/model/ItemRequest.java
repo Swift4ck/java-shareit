@@ -1,8 +1,6 @@
 package ru.practicum.shareit.request.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import ru.practicum.shareit.user.User;
 
@@ -21,11 +19,10 @@ public class ItemRequest {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @NotBlank
+
     private String description;
 
     @ManyToOne
-    @NotNull
     @JoinColumn(name = "requestor_id")
     private User requestor;
 

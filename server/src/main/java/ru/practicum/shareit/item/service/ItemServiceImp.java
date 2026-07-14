@@ -120,11 +120,6 @@ public class ItemServiceImp implements ItemService {
     public Collection<ItemDto> searchItem(Long userId, String searchString) {
         log.info("Получен запрос на поиск item, пользователя {} с текстом {}", userId, searchString);
 
-        if (searchString.isEmpty()) {
-            log.warn("Поле строки пуста");
-            return List.of();
-        }
-
         return itemRepository.search(searchString).stream()
                 .map(ItemMapper::toItemDto)
                 .toList();

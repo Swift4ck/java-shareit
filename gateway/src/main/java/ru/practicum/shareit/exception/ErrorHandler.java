@@ -13,14 +13,6 @@ import java.util.Map;
 @Slf4j
 public class ErrorHandler {
 
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public Map<String, String> handleNotFoundException(final NotFoundException e) {
-        log.error("Обработано ошибка NotFoundException {}", e.getMessage());
-        return Map.of("error", e.getMessage());
-    }
-
-
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Map<String, String> handleValidationException(final MethodArgumentNotValidException e) {
@@ -28,10 +20,4 @@ public class ErrorHandler {
         return Map.of("error", e.getMessage());
     }
 
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public Map<String, String> handleGlobalException(Exception ex) {
-        log.error("Произошла ошибка сервера {}", ex.getMessage());
-        return Map.of("error", ex.getMessage());
-    }
 }

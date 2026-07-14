@@ -5,6 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 
 @RequestMapping("/items")
 @RestController
@@ -44,6 +46,12 @@ public class ItemController {
     @GetMapping("/search")
     public ResponseEntity<Object> searchItem(@RequestHeader("X-Sharer-User-Id") Long userId, @RequestParam String text) {
         log.info("Получен запрос на поиск item, пользователя {} с текстом {}", userId, text);
+
+        if (text.isBlank()) {
+            log.warn("Поле строки пуста");
+            return ResponseEntity.ok(List.of());
+        }
+
         return itemClient.searchItem(userId, text);
     }
 
