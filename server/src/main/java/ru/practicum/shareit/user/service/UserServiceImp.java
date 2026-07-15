@@ -48,10 +48,10 @@ public class UserServiceImp implements UserService {
     @Override
     public UserDto getByUserId(Long userId) {
         log.info("Получен запрос на получения пользователя {}", userId);
-         User user  = userRepository.findById(userId)
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("Пользователь с ID " + userId + " не найден"));
 
-         return UserMapper.toUserDto(user);
+        return UserMapper.toUserDto(user);
     }
 
     @Override
