@@ -13,7 +13,7 @@ import ru.practicum.shareit.user.repository.UserRepository;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-@@Transactional(readOnly = true)
+@Transactional(readOnly = true)
 public class UserServiceImp implements UserService {
 
     private final UserRepository userRepository;
