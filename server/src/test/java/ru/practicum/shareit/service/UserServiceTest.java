@@ -9,6 +9,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.user.User;
+import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.repository.UserRepository;
 import ru.practicum.shareit.user.service.UserServiceImp;
 
@@ -38,55 +39,56 @@ public class UserServiceTest {
 
     @Test
     public void createUser() {
+        UserDto inputDto = new UserDto("Test", "testovi@pochta.com");
+
         when(userRepository.save(any(User.class))).thenReturn(user);
 
-        User result = userServiceImp.createUser(user);
+        UserDto result = userServiceImp.createUser(inputDto);
 
         assertNotNull(result);
         assertEquals(1L, result.getId());
         assertEquals("Test", result.getName());
         assertEquals("testovi@pochta.com", result.getEmail());
-
-        verify(userRepository).save(user);
+        verify(userRepository).save(any(User.class));
     }
 
 
     @Test
-    void updateUser() {
-        User updated = new User(null, "Test", "testovi@pochta.com");
+    public void updateUser() {
+        UserDto updateDto = new UserDto("NewName", "new@mail.com");
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         when(userRepository.save(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        User result = userServiceImp.updateUser(1L, updated);
+        UserDto result = userServiceImp.updateUser(1L, updateDto);
 
-        assertEquals("Test", result.getName());
-        assertEquals("testovi@pochta.com", result.getEmail());
+        assertEquals("NewName", result.getName());
+        assertEquals("new@mail.com", result.getEmail());
         verify(userRepository).save(user);
     }
 
     @Test
     void updateUserOnlyNameProvided() {
-        User updated = new User(null, "Test", null);
+        UserDto updateDto = new UserDto("NewName", null);
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         when(userRepository.save(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        User result = userServiceImp.updateUser(1L, updated);
+        UserDto result = userServiceImp.updateUser(1L, updateDto);
 
-        assertEquals("Test", result.getName());
+        assertEquals("NewName", result.getName());
         assertEquals("testovi@pochta.com", result.getEmail());
         verify(userRepository).save(user);
     }
 
     @Test
     void updateUserOnlyEmailProvided() {
-        User updated = new User(null, null, "testovi@pochta.com");
+        UserDto updateDto = new UserDto(null, "new@mail.com");
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         when(userRepository.save(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        User result = userServiceImp.updateUser(1L, updated);
+        UserDto result = userServiceImp.updateUser(1L, updateDto);
 
         assertEquals("Test", result.getName());
-        assertEquals("testovi@pochta.com", result.getEmail());
+        assertEquals("new@mail.com", result.getEmail());
         verify(userRepository).save(user);
     }
 
@@ -94,7 +96,7 @@ public class UserServiceTest {
     void updateUserUserNotFound() {
         when(userRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-        assertThrows(NotFoundException.class, () -> userServiceImp.updateUser(99L, user));
+        assertThrows(NotFoundException.class, () -> userServiceImp.updateUser(99L, new UserDto("name", "email")));
     }
 
 
@@ -102,10 +104,14 @@ public class UserServiceTest {
     void getByUserIdUserExists() {
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
 
-        User result = userServiceImp.getByUserId(1L);
+        UserDto result = userServiceImp.getByUserId(1L);
 
-        assertEquals(user, result);
+        assertNotNull(result);
+        assertEquals(1L, result.getId());
+        assertEquals("Test", result.getName());
+        assertEquals("testovi@pochta.com", result.getEmail());
     }
+
 
     @Test
     void getByUserIdUserNotFound() {
@@ -129,7 +135,6 @@ public class UserServiceTest {
 
     @Test
     void deleteUserUserNotFound() {
-
         when(userRepository.findById(anyLong())).thenReturn(Optional.empty());
 
         assertThrows(NotFoundException.class, () -> userServiceImp.deleteUser(99L));

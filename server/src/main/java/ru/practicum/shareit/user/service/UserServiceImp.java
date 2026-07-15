@@ -5,6 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.user.User;
+import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.dto.UserMapper;
 import ru.practicum.shareit.user.repository.UserRepository;
 
 @Service
@@ -15,13 +17,17 @@ public class UserServiceImp implements UserService {
     private final UserRepository userRepository;
 
     @Override
-    public User createUser(User user) {
-        log.info("Получен запрос на создания пользователя {}", user);
-        return userRepository.save(user);
+    public UserDto createUser(UserDto userDto) {
+        log.info("Получен запрос на создания пользователя {}", userDto);
+
+        User user = UserMapper.toUser(userDto);
+        User savedUser = userRepository.save(user);
+
+        return UserMapper.toUserDto(savedUser);
     }
 
     @Override
-    public User updateUser(Long userId, User user) {
+    public UserDto updateUser(Long userId, UserDto user) {
         log.info("Получен запрос на обновления пользователя {}", user);
 
         User findUser = userRepository.findById(userId)
@@ -35,14 +41,17 @@ public class UserServiceImp implements UserService {
             findUser.setEmail(user.getEmail());
         }
 
-        return userRepository.save(findUser);
+        User updateUser = userRepository.save(findUser);
+        return UserMapper.toUserDto(updateUser);
     }
 
     @Override
-    public User getByUserId(Long userId) {
+    public UserDto getByUserId(Long userId) {
         log.info("Получен запрос на получения пользователя {}", userId);
-        return userRepository.findById(userId)
+         User user  = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("Пользователь с ID " + userId + " не найден"));
+
+         return UserMapper.toUserDto(user);
     }
 
     @Override

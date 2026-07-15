@@ -7,8 +7,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import ru.practicum.shareit.user.User;
+
 import ru.practicum.shareit.user.UserController;
+import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.service.UserService;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -31,52 +32,50 @@ class UserControllerTest {
 
     @Test
     public void createUser() throws Exception {
+        UserDto inputDto = new UserDto("Тест тестович", "test@yandex.ru");
+        UserDto savedDto = new UserDto(1L, "Тест тестович", "test@yandex.ru");
 
-        User enterUser = new User(null, "Тест тестович", "test@yandex.ru");
-
-        User savedUser = new User(1L, "Тест тестович", "test@yandex.ru");
-
-        when(userService.createUser(any(User.class))).thenReturn(savedUser);
+        when(userService.createUser(any(UserDto.class))).thenReturn(savedDto);
 
         mockMvc.perform(post("/users")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(enterUser)))
+                        .content(objectMapper.writeValueAsString(inputDto)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1L))
                 .andExpect(jsonPath("$.name").value("Тест тестович"))
                 .andExpect(jsonPath("$.email").value("test@yandex.ru"));
-
     }
 
     @Test
     public void getUserId() throws Exception {
-        User user = new User(1L, "Тест тестович", "test@yandex.ru");
-
-        when(userService.getByUserId(1L)).thenReturn(user);
+        UserDto userDto = new UserDto(1L, "Тест тестович", "test@yandex.ru");
+        when(userService.getByUserId(1L)).thenReturn(userDto);
 
         mockMvc.perform(get("/users/{userId}", 1L))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1L))
-                .andExpect(jsonPath("$.name").value("Тест тестович"));
+                .andExpect(jsonPath("$.name").value("Тест тестович"))
+                .andExpect(jsonPath("$.email").value("test@yandex.ru"));
     }
 
     @Test
     public void updateUser() throws Exception {
+        UserDto updateDto = new UserDto("Новое имя", "new@mail.com");
+        UserDto updatedDto = new UserDto(1L, "Новое имя", "new@mail.com");
 
-        User updateUser = new User(1L, "Тест тестович", "test@yandex.ru");
-
-        when(userService.updateUser(eq(1L), any(User.class))).thenReturn(updateUser);
+        when(userService.updateUser(eq(1L), any(UserDto.class))).thenReturn(updatedDto);
 
         mockMvc.perform(patch("/users/{userId}", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"name\":\"Тест тестович\", \"email\":\"test@yandex.ru\"}"))
+                        .content(objectMapper.writeValueAsString(updateDto)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value("Тест тестович"));
-
+                .andExpect(jsonPath("$.id").value(1L))
+                .andExpect(jsonPath("$.name").value("Новое имя"))
+                .andExpect(jsonPath("$.email").value("new@mail.com"));
     }
 
     @Test
-    void deleteUser() throws Exception {
+    public void deleteUser() throws Exception {
         mockMvc.perform(delete("/users/{userId}", 1L))
                 .andExpect(status().isOk());
     }
