@@ -7,6 +7,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.ItemController;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
@@ -119,6 +120,35 @@ public class ItemControllerTest {
                 .andExpect(jsonPath("$.id").value(1L))
                 .andExpect(jsonPath("$.text").value("text"))
                 .andExpect(jsonPath("$.authorName").value("автор"));
+    }
+
+    @Test
+    public void getItemByIdNotFound() throws Exception {
+        long userId = 1L;
+
+        long itemId = 999L;
+
+        when(itemService.getByIdItems(userId, itemId))
+                .thenThrow(new NotFoundException("Вещь не найдена"));
+
+        mockMvc.perform(get("/items/{itemId}", itemId)
+                        .header("X-Sharer-User-Id", userId))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void createItemErorr500() throws Exception {
+        long userId = 1L;
+        ItemDto inputDto = new ItemDto(null, "test", "opisanie", true, null, null);
+
+        when(itemService.createItemDto(eq(userId), any(ItemDto.class)))
+                .thenThrow(new RuntimeException("Неизвестная ошибка"));
+
+        mockMvc.perform(post("/items")
+                        .header("X-Sharer-User-Id", userId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(inputDto)))
+                .andExpect(status().isInternalServerError());
     }
 
 
