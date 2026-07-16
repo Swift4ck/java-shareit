@@ -19,7 +19,6 @@ services:
     depends_on:
       - db
     environment:
-      - SPRING_PROFILES_ACTIVE=test
       - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/shareit
       - SPRING_DATASOURCE_USERNAME=shareit
       - SPRING_DATASOURCE_PASSWORD=shareit
