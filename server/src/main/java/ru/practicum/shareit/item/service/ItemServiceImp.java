@@ -137,9 +137,7 @@ public class ItemServiceImp implements ItemService {
 
 
         boolean hasCompletedBooking = bookingRepository
-                .existsByBookerIdAndItemIdAndStatusAndEndBefore(
-                        userId, itemId, BookingStatus.APPROVED, LocalDateTime.now()
-                );
+                .existsByBookerIdAndItemIdAndStatusAndEndBefore(userId, itemId, BookingStatus.APPROVED, LocalDateTime.now());
 
         if (!hasCompletedBooking) {
             throw new BadRequestException("Нельзя оставить комментарий без завершённого бронирования");
